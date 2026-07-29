@@ -186,13 +186,13 @@ h2 {
 #display-my-id { font-size: 0.75rem; color: var(--accent-cyan); font-family: monospace; }
 .btn-copy { background: transparent; border: none; color: #fff; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
 
-/* حاوية الرسائل وتدفق الفقاعات */
+/* حاوية الرسائل وتدفق الفقاعات الاحترافي */
 .messages-container {
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     padding-bottom: 5px;
 }
 
@@ -207,16 +207,55 @@ h2 {
     line-height: 1.4;
 }
 
-.msg-wrapper { display: flex; flex-direction: column; max-width: 80%; }
-.msg-wrapper.me { align-self: flex-start; }
-.msg-wrapper.others { align-self: flex-end; }
-.msg-author { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px; padding: 0 2px; }
-.msg-bubble { padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; word-break: break-all; }
+/* تصميم الفقاعات والاتجاهات لتحديد من أرسل بوضوح */
+.msg-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+}
 
-.me .msg-bubble { background-color: var(--accent-cyan); color: #000; border-top-right-radius: 2px; }
-.others .msg-bubble { background-color: var(--border-color); color: var(--text-main); border-top-left-radius: 2px; }
+/* رسائلي أنا: تخرج من اليمين بلون سيان */
+.msg-wrapper.me {
+    align-self: flex-start;
+    align-items: flex-start;
+}
 
-/* صندوق الرسائل السفلي والأزرار الإضافية */
+/* رسائل الآخرين: تأتي من اليسار بلون غامق */
+.msg-wrapper.others {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.msg-author {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    padding: 0 4px;
+    font-weight: 600;
+}
+
+.msg-bubble {
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    word-break: break-word;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.me .msg-bubble {
+    background-color: var(--accent-cyan);
+    color: #000;
+    border-top-right-radius: 2px;
+}
+
+.others .msg-bubble {
+    background-color: var(--border-color);
+    color: var(--text-main);
+    border-top-left-radius: 2px;
+}
+
+/* صندوق الرسائل السفلي */
 .chat-footer {
     padding: 10px 0 0 0;
     display: flex;
@@ -249,4 +288,3 @@ h2 {
     cursor: pointer;
     font-size: 0.95rem;
 }
-
