@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق المراسلة النصية المشفرة</title>
+    <!-- استدعاء ملف التنسيق الأساسي -->
+    <link rel="stylesheet" href="style.css">
+    <!-- مكتبة التشفير العسكري للرسائل AES-256 -->
+    <script src="https://cloudflare.com"></script>
+    <!-- مكتبة الربط المباشر بين المتصفحات Peer-to-Peer -->
+    <script src="https://unpkg.com"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- ================= شاشة الترحيب والاختيار ================= -->
+        <div id="welcome-screen" class="screen active">
+            <div class="logo-zone">🔐</div>
+            <h2>بوابة التشفير العسكري</h2>
+            <p class="subtitle">محادثة نصية P2P آمنة • حد أقصى 4 مستخدمين</p>
+            <div class="welcome-actions">
+                <button id="btn-choose-create" class="btn primary">➕ إنشاء غرفة مشفرة جديدة</button>
+                <button id="btn-choose-join" class="btn secondary">🚪 دخول إلى غرفة موجودة</button>
+            </div>
+        </div>
+
+        <!-- ================= شاشة إنشاء غرفة جديدة ================= -->
+        <div id="create-screen" class="screen">
+            <h2>🛠️ إنشاء غرفة جديدة</h2>
+            <p class="subtitle">ستكون أنت المضيف والمحور الأساسي للغرفة</p>
+            
+            <div class="input-group">
+                <label for="create-username">الاسم المستعار للخصوصية:</label>
+                <input type="text" id="create-username" placeholder="اكتب اسماً مستعاراً عشوائياً...">
+            </div>
+
+            <div class="input-group">
+                <label for="create-password">كلمة سر الغرفة (مفتاح فك التشفير):</label>
+                <input type="password" id="create-password" placeholder="اكتب كلمة سر قوية جداً">
+                <small class="hint">يجب مشاركة هذه الكلمة مع الـ 3 أشخاص الآخرين لفك تشفير الرسائل.</small>
+            </div>
+
+            <div class="actions">
+                <button id="btn-submit-create" class="btn success">توليد الغرفة وتفعيل التعمية</button>
+                <button class="btn btn-back text-btn">⬅️ العودة للرئيسية</button>
+            </div>
+            <div id="create-error" class="error-msg"></div>
+        </div>
+
+        <!-- ================= شاشة الدخول لغرفة موجودة ================= -->
+        <div id="join-screen" class="screen">
+            <h2>🚪 دخول لغرفة موجودة</h2>
+            <p class="subtitle">أدخل معرف الاتصال المشترك من صديقك المنشئ</p>
+            
+            <div class="input-group">
+                <label for="join-username">الاسم المستعار للخصوصية:</label>
+                <input type="text" id="join-username" placeholder="اكتب اسماً مستعاراً عشوائياً...">
+            </div>
+
+            <div class="input-group">
+                <label for="join-peer-id">معرّف منشئ الغرفة (Host ID):</label>
+                <input type="text" id="join-peer-id" placeholder="الصق معرّف الصديق المضيف هنا...">
+            </div>
+
+            <div class="input-group">
+                <label for="join-password">كلمة السر المشتركة للغرفة:</label>
+                <input type="password" id="join-password" placeholder="كلمة السر لفك تشفير البيانات">
+            </div>
+
+            <div class="actions">
+                <button id="btn-submit-join" class="btn primary">ربط خطوط التشفير</button>
+                <button class="btn btn-back text-btn">⬅️ العودة للرئيسية</button>
+            </div>
+            <div id="join-error" class="error-msg"></div>
+        </div>
+
+        <!-- ================= شاشة المحادثة النصية المتقدمة ================= -->
+        <div id="chat-screen" class="screen">
+            
+            <!-- الهيدر العلوي ونظام إدارة الاتصال -->
+            <div class="chat-header">
+                <div class="room-status-zone">
+                    <span class="user-count">المتواجدون: <strong id="peer-count">1</strong>/4</span>
+                    <div id="share-zone" class="share-zone" style="display:none;">
+                        <div class="copy-box">
+                            <span id="display-my-id">جاري التوليد...</span>
+                            <button id="btn-copy-id" class="btn-copy">📋 نسخ المعرّف</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-leave" class="btn danger">تدمير الجلسة 💥</button>
+            </div>
+
+            <!-- ساحة بث وعرض الرسائل النصية المشفرة -->
+            <div id="messages-container" class="messages-container">
+                <div class="system-msg">🔒 تشفير محلي عسكري مستمر AES-256. جميع الرسائل النصية تمر مباشرة بين الهواتف دون المرور أو التخزين على أي خادم وسيط.</div>
+            </div>
+
+            <!-- التذييل السفلي لإدخال النصوص فقط -->
+            <div class="chat-footer">
+                <input type="text" id="message-input" placeholder="اكتب رسالة مشفرة..." autocomplete="off">
+                <button id="btn-send" class="btn-success-send">إرسال</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- استدعاء ملف محرك العمليات الأساسي -->
+    <script src="script.js"></script>
+</body>
+</html>
+
