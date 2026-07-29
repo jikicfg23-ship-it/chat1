@@ -39,7 +39,7 @@ document.getElementById('btn-submit-create').addEventListener('click', () => {
     errorEl.innerText = "";
     isHost = true;
 
-    // توليد كود عشوائي فريد للغرفة يبدأ بـ 'mil-room-'
+    // توليد كود عشوائي فريد ومصحح بنقاط برمجية سليمة
     const generatedRoomId = `mil-room-${Math.floor(100000 + Math.random() * 900000)}`;
     initPeerEngine(generatedRoomId, errorEl);
 });
@@ -58,29 +58,28 @@ document.getElementById('btn-submit-join').addEventListener('click', () => {
     errorEl.innerText = "";
     isHost = false;
 
-    // المشترك يدخل بمعرّف عشوائي خاص به، ثم يتصل بالمنشئ (Host)
     const clientPeerId = `mil-client-${Math.floor(100000 + Math.random() * 900000)}`;
     initPeerEngine(clientPeerId, errorEl, targetHostId);
 });
 
-// تأسيس محرك الربط المباشر PeerJS واستقبال الاتصالات النصية
+// تأسيس محرك الربط المباشر PeerJS واستقبال الاتصالات النصية والانتقال التلقائي للغرفة
 function initPeerEngine(myId, errorDisplayElement, targetHostId = null) {
     peer = new Peer(myId);
 
     peer.on('open', (id) => {
+        // الانتقال الفوري والمضمون لشاشة المحادثة بعد نجاح فتح بروتوكول الاتصال
         changeScreen('chat');
+        
         if (isHost) {
             document.getElementById('display-my-id').innerText = id;
             document.getElementById('share-zone').style.display = 'block';
         } else {
             document.getElementById('share-zone').style.display = 'none';
-            // إذا كان مشتركاً، يقوم فوراً بفتح قناة اتصال مع المنشئ
             const conn = peer.connect(targetHostId);
             setupConnection(conn);
         }
     });
 
-    // استقبال الأجهزة المنشئة للاتصالات والبيانات
     peer.on('connection', (conn) => {
         if (connections.length + 1 >= MAX_TOTAL_USERS) {
             conn.on('open', () => {
@@ -97,7 +96,6 @@ function initPeerEngine(myId, errorDisplayElement, targetHostId = null) {
     });
 }
 
-// ضبط قنوات المراسلة واستقبال وفك تشفير الرسائل
 function setupConnection(conn) {
     if (connections.find(c => c.peer === conn.peer)) return;
     connections.push(conn);
@@ -111,7 +109,7 @@ function setupConnection(conn) {
         }
 
         try {
-            // 🔒 فك التشفير العسكري لحظياً داخل المتصفح للرسالة الواردة
+            // فك التشفير العسكري لحظياً داخل المتصفح للرسالة الواردة
             const bytes = CryptoJS.AES.decrypt(data.cipher, roomPassword);
             const clearText = bytes.toString(CryptoJS.enc.Utf8);
             
@@ -129,7 +127,7 @@ function setupConnection(conn) {
     });
 }
 
-// 📦 بث ونقل الرسائل النصية المشفرة
+// بث ونقل الرسائل النصية المشفرة عبر الشبكة المباشرة
 const messageInput = document.getElementById('message-input');
 const btnSend = document.getElementById('btn-send');
 
@@ -140,7 +138,7 @@ function broadcastTextMessage() {
     const text = messageInput.value.trim();
     if (!text) return;
 
-    // 🔒 تعمية وتشفير كامل محتوى النص محلياً بـ AES-256 قبل الخروج للإنترنت
+    // تعمية وتشفير كامل محتوى النص محلياً بـ AES-256 قبل الخروج للإنترنت
     const encryptedData = CryptoJS.AES.encrypt(text, roomPassword).toString();
 
     const payload = {
@@ -156,7 +154,7 @@ function broadcastTextMessage() {
     messageInput.value = "";
 }
 
-// عرض الرسائل وتوليد فقاعات الدردشة
+// عرض الرسائل وتوليد فقاعات الدردشة بدقة تحديد هوية المرسل
 const messagesContainer = document.getElementById('messages-container');
 
 function renderMessage(sender, text, type) {
@@ -188,23 +186,19 @@ function updateUserCounter() {
     document.getElementById('peer-count').innerText = connections.length + 1;
 }
 
-// نسخ معرّف المنشئ تلقائياً للحافظة
 document.getElementById('btn-copy-id').addEventListener('click', () => {
     const idText = document.getElementById('display-my-id').innerText;
     navigator.clipboard.writeText(idText);
     alert("تم نسخ معرّف الغرفة الآمن! أرسله لأصدقائك الآن.");
 });
 
-// زر [تدمير الجلسة] لمسح البيانات كلياً وتصفير المتصفح والمساحة
 document.getElementById('btn-leave').addEventListener('click', exitApp);
 
 function exitApp() {
     if (peer) peer.destroy();
-    
     connections = [];
     messagesContainer.innerHTML = '<div class="system-msg">🔒 تشفير محلي عسكري مستمر AES-256. جميع الرسائل النصية تمر مباشرة بين الهواتف دون المرور أو التخزين على أي خادم وسيط.</div>';
     
-    // تصفير حقول كلمات السر تماماً من ذاكرة المتصفح قبل الخروج للرئيسية
     document.getElementById('create-password').value = "";
     document.getElementById('join-password').value = "";
 
